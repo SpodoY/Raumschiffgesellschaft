@@ -16,65 +16,66 @@
 <% pageContext.setAttribute("items", new String[]{"one", "two", "three"}); %>
 
 <sql:setDataSource
-  driver="oracle.jdbc.driver.OracleDriver"
-  url="jdbc:oracle:thin:@localhost:1521/xepdb1"
-  user="csdc24vz_05"
-  password="Eg3Noht"
+        driver="oracle.jdbc.driver.OracleDriver"
+        url="jdbc:oracle:thin:@localhost:1521/xepdb1"
+        user="csdc24vz_05"
+        password="Eg3Noht"
 />
 
 <html>
 <head>
-<title>Welcome</title>
+  <title>Welcome</title>
 </head>
 <body>
-  <nav class="navbar navbar-inverse">
+<nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <ul class="nav navbar-nav">
-      <li class="active"><a href="index.jsp">Home</a></li>
-        <li><a href="Flug-Buchen.jsp">Flug Buchen</a></li>
-        <li><a href="Flug-Suchen.jsp">Flug suchen</a></li>
-        <li><a href="Techniker-Anlegen.jsp">Neuen Techniker anlegen</a></li>
-        <li><a href="Techniker-Flugzeug-exemplar.jsp">Techniker-Flugzeug-exemplar</a></li>
-        <li><a href="Logbuch-Ausleihen.jsp">Ausleihen Logbuch anzeigen</a></li>
+      <li ><a href="index.jsp">Home</a></li>
+      <li><a href="Flug-Buchen.jsp">Flug Buchen</a></li>
+      <li><a href="Flug-Suchen.jsp">Flug suchen</a></li>
+      <li><a href="Techniker-Anlegen.jsp">Neuen Techniker anlegen</a></li>
+      <li><a href="Techniker-Flugzeug-exemplar.jsp">Techniker-Flugzeug-exemplar</a></li>
+      <li class="active"><a href="Logbuch-Ausleihen.jsp">Logbuch anzeigen und Ausleihen</a></li>
+      <li><a href="Logbuch-Loeschen.jsp">Logbuch zureckgeben</a></li>
       </li>
     </ul>
   </div>
 </nav>
-  
 
 
 
-<sql:query var="tables1" 
-sql="select Logbuchentlehner,Code  from Raumschiff WHERE Code IS NOT NULL AND Logbuchentlehner IS NOT NULL" >
+
+<sql:query var="tables1"
+           sql="select Logbuchentlehner,Code  from Raumschiff WHERE Code IS NOT NULL AND Logbuchentlehner IS NOT NULL" >
 </sql:query>
 <table class="table table-striped table-dark" border="4">
   <h1> Logbooks currently in use </h1>
   <thead>
-   <th scope="col">Logbuchentlehner</th>
-   <th scope="col">CODE</th>
+  <th scope="col">Logbuchentlehner</th>
+  <th scope="col">CODE</th>
   </thead>
   <c:forEach var="tabRow" begin="0" items="${tables1.rowsByIndex}">
     <tr>
-    <td>${tabRow[0]}</td>
-    <td>${tabRow[1]}</td>
+      <td>${tabRow[0]}</td>
+      <td>${tabRow[1]}</td>
     </tr>
-</c:forEach>
+  </c:forEach>
 </table>
 
-   
-<sql:query var="tables2" 
-sql="select Code,Logbuchentlehner  from Raumschiff WHERE Code IS NOT NULL AND Logbuchentlehner IS NULL" >
+
+<sql:query var="tables2"
+           sql="select Code,Logbuchentlehner  from Raumschiff WHERE Code IS NOT NULL AND Logbuchentlehner IS NULL" >
 </sql:query>
 <table class="table table-striped table-dark" border="4">
   <h1> Logbooks currently free </h1>
   <thead>
-   <th scope="col">Code</th>
+  <th scope="col">Code</th>
   </thead>
   <c:forEach var="tabRow" begin="0" items="${tables2.rowsByIndex}">
     <tr>
-    <td>${tabRow[0]}</td>
+      <td>${tabRow[0]}</td>
     </tr>
-</c:forEach>
+  </c:forEach>
 </table>
 
 
@@ -87,13 +88,13 @@ sql="select Code,Logbuchentlehner  from Raumschiff WHERE Code IS NOT NULL AND Lo
     <option value="">No logbook selected</option>
 
     <sql:query var = "freeCodes"
-      sql = "select Code from Raumschiff WHERE Logbuchentlehner IS NULL">
+               sql = "select Code from Raumschiff WHERE Logbuchentlehner IS NULL">
     </sql:query>
 
     <c:forEach var="availiabelCodes" begin="0" items="${freeCodes.rows}">
-      <option value="${availiabelCodes.code}" <c:if test = "${param.code eq availiabelCodes.code}">selected = "selected"</c:if>>
+    <option value="${availiabelCodes.code}" <c:if test = "${param.code eq availiabelCodes.code}">selected = "selected"</c:if>>
         ${availiabelCodes.code}
-    </c:forEach>
+      </c:forEach>
 
   </select>
 
@@ -101,13 +102,13 @@ sql="select Code,Logbuchentlehner  from Raumschiff WHERE Code IS NOT NULL AND Lo
     <option value="">No personal number selected</option>
 
     <sql:query var = "angestellte"
-      sql = "select Angestelltennummer from Angestellter">
+               sql = "select Angestelltennummer from Angestellter">
     </sql:query>
 
     <c:forEach var="availiabelANG" begin="0" items="${angestellte.rows}">
-      <option value="${availiabelANG.Angestelltennummer}" <c:if test = "${param.Angestelltennummer eq availiabelANG.Angestelltennummer}">selected = "selected"</c:if>>
+    <option value="${availiabelANG.Angestelltennummer}" <c:if test = "${param.Angestelltennummer eq availiabelANG.Angestelltennummer}">selected = "selected"</c:if>>
         ${availiabelANG.Angestelltennummer}
-    </c:forEach>
+      </c:forEach>
 
   </select>
   <button type="submit" class="btn btn-success">
@@ -116,39 +117,65 @@ sql="select Code,Logbuchentlehner  from Raumschiff WHERE Code IS NOT NULL AND Lo
 </form>
 
 <c:if test="${!empty param.menu}">
+
+  <c:if test="${!empty param.personalNBR}" >
+    <c:set var = "booklog_id" scope = "session" value = "${param.personalNBR}"/>
+  </c:if>
+
   <c:choose>
-  <c:when test="${empty param.code || empty param.personalNBR}">
-  <H1>ENTER INPUT BRE</H1>
-  </c:when>
+    <c:when test="${empty param.code || empty param.personalNBR}">
+      <H1>ENTER INPUT BRE</H1>
+    </c:when>
 
-  <c:otherwise>
-    <sql:update  var="booklog" sql="UPDATE Raumschiff SET Logbuchentlehner = ? WHERE Code = ?">
-      <sql:param value="${param.personalNBR}" />
-      <sql:param value="${param.code}" />
-    </sql:update >
-    <H2>Your booked logbook</H2>
-    <table class="table table-striped table-dark" border="4">
-      <tr>
-          <th>Booker</th>
-          <th>Logbook</th>
-          <th>Delete a booking</th>
-      </tr>
-      <tr>
-        <th>${param.personalNBR}</th>
-        <th>${param.code}</th>
-        <th><form method="post" action="Logbuch-Löschen.jsp">
-          <input type="hidden" name="NBR" value="${param.personalNBR}" />
-          <input type="hidden" name="Code" value="${param.code}" />
 
-          <button type="submit" class="btn btn-primary"> Deletepage </button>
-        </form>
-      </th>
-      </tr>
-      </table>
+    <c:otherwise>
+      <sql:update  var="booklog" sql="UPDATE Raumschiff SET Logbuchentlehner = ? WHERE Code = ?">
+        <sql:param value="${booklog_id}" />
+        <sql:param value="${param.code}" />
+      </sql:update >
 
-  </c:otherwise>
-
+    </c:otherwise>
   </c:choose>
+</c:if>
+
+<c:if test="${!empty booklog_id}">
+
+
+  <sql:query var="bookdBooks" sql="SELECT code, LOGBUCHENTLEHNER from Raumschiff Where LOGBUCHENTLEHNER is not null and LOGBUCHENTLEHNER = ? ">
+    <sql:param value="${booklog_id}" />
+  </sql:query>
+
+  <c:if test="${!empty bookdBooks.rows[0].code}">
+    not empty
+
+
+
+    <H2>Your booked logbook</H2>
+    <table class="table table-striped table-responsive">
+      <thead class="thead-light">
+      <tr>
+        <th scope="col">Booker</th>
+        <th scope="col">Logbook</th>
+        <th scope="col">Delete a booking</th>
+      </tr>
+      </thead>
+      <tbody>
+      <c:forEach var="entries" varStatus="status" begin="0" items="${bookdBooks.rows}">
+        <td>${entries.LOGBUCHENTLEHNER}</td>
+        <td>${entries.code}</td>
+        <td>
+          <form method="post" action="Logbuch-Geloescht.jsp">
+            <input type="hidden" name="NBR" value="${entries.LOGBUCHENTLEHNER}" />
+            <input type="hidden" name="DeletedCode" value="${entries.code}" />
+            <input type="hidden" name="Code" value="{null}" />
+            <button type="submit" class="btn btn-primary"> Delete </button>
+          </form>
+        </td>
+        </tr>
+      </c:forEach>
+      </tbody>
+    </table>
+  </c:if>
 </c:if>
 
 
