@@ -40,27 +40,31 @@
 </nav>
 
 
-<sql:update var="deleteNormal"
-            sql="UPDATE Raumschiff SET Logbuchentlehner = NUll WHERE Code = ?">
-    <sql:param value="${param.DeletedCode}" />
-</sql:update>
 
-<sql:update var="deleteCreated"
-            sql="UPDATE Raumschiff SET Logbuchentlehner = NUll WHERE Code = ?">
-    <sql:param value="${param.Code}" />
-</sql:update>
-
-<h1>Returend Logbook: </h1>
-<h2>${param.DeletedCode}</h2>
-
-<form method="post" action="Logbuch-Ausleihen.jsp">
-    <button type="submit" class="btn btn-primary"> Zurueck zur Logbuch ausgabe </button>
-</form>
-
-<form method="post" action="Logbuch-Loeschen.jsp">
-    <button type="submit" class="btn btn-primary"> Zurueck zur Logbuch rueckgabe </button>
-</form>
-
+<sql:query var="tables1"
+           sql="select Logbuchentlehner,Code  from Raumschiff WHERE Code IS NOT NULL AND Logbuchentlehner IS NOT NULL">
+</sql:query>
+<table class="table table-striped table-dark" border="4">
+    <h1> Logbooks currently in use </h1>
+    <thead>
+    <th scope="col">Logbuchentlehner</th>
+    <th scope="col">CODE</th>
+    <th scope="col">Delete?</th>
+    </thead>
+    <c:forEach var="tabRow" begin="0" items="${tables1.rowsByIndex}">
+    <tr>
+        <td>${tabRow[0]}</td>
+        <td>${tabRow[1]}</td>
+        <td>
+            <form method="post" action="Logbuch-Geloescht.jsp">
+                <input type="hidden" name="NBR" value="${tabRow[0]}" />
+                <input type="hidden" name="DeletedCode" value="${tabRow[1]}" />
+                <input type="hidden" name="Code" value="{null}" />
+                <button type="submit" class="btn btn-primary"> Return </button>
+            </form>
+        </td>
+    </tr>
+    </c:forEach>
 
 </body>
 
