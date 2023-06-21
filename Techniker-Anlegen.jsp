@@ -150,16 +150,23 @@
             <p>House number: <b>${angelegtePerson.rows[0].Hausnummer}</b></p>
             <p>Postal code: <b>${angelegtePerson.rows[0].Postleitzahl} </b></p>
             <p>City: <b>${angelegtePerson.rows[0].Ort}</p>
+            <br>
+            <td>
+                <form method="post" action="Techniker-Anlegen-Adresse.jsp">
+                    <button type="submit" class="btn btn-primary"> Change Address</button>
+                </form>
+            </td>
+            <br>
             <table class=" table table-striped table-responsive
             " border="1">
-            <tr>
-                <th>Phone number(s)</th>
-            </tr>
-            <c:forEach var="Datensatz" begin="0" items="${angelegtePerson.rowsByIndex}">
                 <tr>
-                    <td>${Datensatz[7]}
+                    <th>Phone number(s)</th>
                 </tr>
-            </c:forEach>
+                <c:forEach var="Datensatz" begin="0" items="${angelegtePerson.rowsByIndex}">
+                    <tr>
+                        <td>${Datensatz[7]}
+                    </tr>
+                </c:forEach>
             </table>
 
         </c:catch>

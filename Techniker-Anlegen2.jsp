@@ -50,6 +50,46 @@
     </div>
 </nav>
 
+<c:if test="${!empty param.strasse2 && !empty param.hausnummer2 && !empty param.postleitzahl2 && !empty param.ort2}">
+
+    <c:catch var="changeAdresseException">
+        <sql:update var="changeAdresse"
+                    sql="UPDATE Person SET Strasse = ?, Hausnummer = ?, Postleitzahl = ?, Ort = ? WHERE Sozialversicherungsnummer LIKE ?">
+            <sql:param value="${param.strasse2}"/>
+            <sql:param value="${param.hausnummer2}"/>
+            <sql:param value="${param.postleitzahl2}"/>
+            <sql:param value="${param.ort2}"/>
+            <sql:param value="${person_id}"/>
+
+        </sql:update>
+    </c:catch>
+
+
+    <c:if test="${changeAdresseException != null}">
+        <p>The type of exception is : ${changeAdresseException} <br/>
+            There is an exception: ${changeAdresseException.message}</p>
+    </c:if>
+
+
+    <c:catch var="catchShowPerson2Exception">
+        <sql:query var="angelegtePerson2"
+                   sql="SELECT Person.*, Hat_Telefonnummer.Telefonnummer FROM Person JOIN Hat_Telefonnummer ON Person.Sozialversicherungsnummer = Hat_Telefonnummer.Sozialversicherungsnummer WHERE Person.Sozialversicherungsnummer  Like ?">
+            <sql:param value="${person_id}"/>
+        </sql:query>
+
+        <c:set var="angelegte_Person" scope="session" value="${angelegtePerson2}"/>
+
+    </c:catch>
+
+    <c:if test="${catchShowPerson2Exception != null}">
+        <p>The type of exception is : ${catchShowPerson2Exception} <br/>
+            There is an exception: ${catchShowPerson2Exception.message}</p>
+    </c:if>
+
+
+</c:if>
+
+
 <div class="center">
 
     <p><b>${angelegte_Person.rows[0].Vorname} ${angelegte_Person.rows[0].Nachname}</b></p>
@@ -122,7 +162,8 @@
 
         <br>
         <br>
-        <button onclick="window.location.href = 'Techniker-Anlegen3.jsp';" class="btn btn-primary">Continue with entering the technician
+        <button onclick="window.location.href = 'Techniker-Anlegen3.jsp';" class="btn btn-primary">Continue with
+            entering the technician
             data
         </button>
     </c:if>
@@ -156,104 +197,105 @@
 
     <c:if test="${!empty param.menu }">
 
-    <c:if test="${!empty param.angestelltennummer && !empty param.kontonummer && !empty param.bankleitzahl && !empty param.kontostand && !empty param.bankname}">
+        <c:if test="${!empty param.angestelltennummer && !empty param.kontonummer && !empty param.bankleitzahl && !empty param.kontostand && !empty param.bankname}">
 
-        <c:set var="angestellten_id" scope="session" value="${param.angestelltennummer}"/>
+            <c:set var="angestellten_id" scope="session" value="${param.angestelltennummer}"/>
 
-        <c:catch var="catchBankException">
-            <sql:update var="angestellter"
-                        sql="INSERT INTO Bank (Bankleitzahl, Bankname) VALUES (?,?)">
-                <sql:param value="${param.bankleitzahl}"/>
-                <sql:param value="${param.bankname}"/>
-            </sql:update>
-        </c:catch>
+            <c:catch var="catchBankException">
+                <sql:update var="angestellter"
+                            sql="INSERT INTO Bank (Bankleitzahl, Bankname) VALUES (?,?)">
+                    <sql:param value="${param.bankleitzahl}"/>
+                    <sql:param value="${param.bankname}"/>
+                </sql:update>
+            </c:catch>
 
-        <c:catch var="catchAngestellterException">
-            <sql:update var="angestellter"
-                        sql="INSERT INTO Angestellter (Angestelltennummer, Sozialversicherungsnummer, Kontonummer, Bankleitzahl, Kontostand) VALUES (?,?,?,?,?)">
-                <sql:param value="${angestellten_id}"/>
-                <sql:param value="${person_id}"/>
-                <sql:param value="${param.kontonummer}"/>
-                <sql:param value="${param.bankleitzahl}"/>
-                <sql:param value="${param.kontostand}"/>
+            <c:catch var="catchAngestellterException">
+                <sql:update var="angestellter"
+                            sql="INSERT INTO Angestellter (Angestelltennummer, Sozialversicherungsnummer, Kontonummer, Bankleitzahl, Kontostand) VALUES (?,?,?,?,?)">
+                    <sql:param value="${angestellten_id}"/>
+                    <sql:param value="${person_id}"/>
+                    <sql:param value="${param.kontonummer}"/>
+                    <sql:param value="${param.bankleitzahl}"/>
+                    <sql:param value="${param.kontostand}"/>
 
-            </sql:update>
-        </c:catch>
+                </sql:update>
+            </c:catch>
 
-        <br>
-        <br>
-        <h3> Employee has been successfully entered: </h3>
+            <br>
+            <br>
+            <h3> Employee has been successfully entered: </h3>
 
-        <c:catch var="catchShowAngestellterException">
-            <sql:query var="angelegteAngestellter"
-                       sql="SELECT a.*, b.Bankname FROM Angestellter a JOIN Bank b ON a.Bankleitzahl = b.Bankleitzahl WHERE a.Angestelltennummer Like ?">
-                <sql:param value="${angestellten_id}"/>
-            </sql:query>
+            <c:catch var="catchShowAngestellterException">
+                <sql:query var="angelegteAngestellter"
+                           sql="SELECT a.*, b.Bankname FROM Angestellter a JOIN Bank b ON a.Bankleitzahl = b.Bankleitzahl WHERE a.Angestelltennummer Like ?">
+                    <sql:param value="${angestellten_id}"/>
+                </sql:query>
 
-            <table class="table table-striped table-dark" border="1">
-                <tr>
-                    <th>Employee Number</th>
-                    <th>Account number</th>
-                    <th>Bank code</th>
-                    <th>Bank name</th>
-                    <th>Account balance</th>
-                </tr>
-                <c:forEach var="Datensatz" begin="0" items="${angelegteAngestellter.rowsByIndex}">
+                <table class="table table-striped table-dark" border="1">
                     <tr>
-                        <td>${Datensatz[0]}</td>
-                        <td>${Datensatz[2]}</td>
-                        <td>${Datensatz[3]}</td>
-                        <td>${Datensatz[5]}</td>
-                        <td>${Datensatz[4]}</td>
+                        <th>Employee Number</th>
+                        <th>Account number</th>
+                        <th>Bank code</th>
+                        <th>Bank name</th>
+                        <th>Account balance</th>
                     </tr>
-                </c:forEach>
-            </table>
-        </c:catch>
+                    <c:forEach var="Datensatz" begin="0" items="${angelegteAngestellter.rowsByIndex}">
+                        <tr>
+                            <td>${Datensatz[0]}</td>
+                            <td>${Datensatz[2]}</td>
+                            <td>${Datensatz[3]}</td>
+                            <td>${Datensatz[5]}</td>
+                            <td>${Datensatz[4]}</td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:catch>
 
-        <c:if test="${catchBankException != null}">
-            <p>The type of exception is : ${catchBankException} <br/>
-                There is an exception: ${catchBankException.message}</p>
+            <c:if test="${catchBankException != null}">
+                <p>The type of exception is : ${catchBankException} <br/>
+                    There is an exception: ${catchBankException.message}</p>
+            </c:if>
+
+            <c:if test="${catchAngestellterException != null}">
+                <p>The type of exception is : ${catchAngestellterException} <br/>
+                    There is an exception: ${catchAngestellterException.message}</p>
+            </c:if>
+
+            <c:if test="${catchShowAngestellterException != null}">
+                <p>The type of exception is : ${catchShowAngestellterException} <br/>
+                    There is an exception: ${catchShowAngestellterException.message}</p>
+            </c:if>
+
+            <br>
+            <br>
+            <button onclick="window.location.href = 'Techniker-Anlegen3.jsp';" class="btn btn-primary">Continue with
+                entering the technician
+                data
+            </button>
+
         </c:if>
 
-        <c:if test="${catchAngestellterException != null}">
-            <p>The type of exception is : ${catchAngestellterException} <br/>
-                There is an exception: ${catchAngestellterException.message}</p>
+
+        <c:if test="${empty param.angestelltennummer || empty param.kontonummer || empty param.bankleitzahl || empty param.kontostand || empty param.bankname}">
+            <c:if test="${empty param.angestelltennummer }">
+                <p>Employee number was missing </p>
+            </c:if>
+            <c:if test="${empty param.kontonummer }">
+                <p>Account number was missing}</p>
+            </c:if>
+            <c:if test="${empty param.bankleitzahl }">
+                <p>Bank code was missing </p>
+            </c:if>
+            <c:if test="${empty param.bankname }">
+                <p>Bank name was missing </p>
+            </c:if>
+            <c:if test="${empty param.kontostand }">
+                <p>Account balance was missing. If no account balance is known, please enter 0. </p>
+            </c:if>
         </c:if>
-
-        <c:if test="${catchShowAngestellterException != null}">
-            <p>The type of exception is : ${catchShowAngestellterException} <br/>
-                There is an exception: ${catchShowAngestellterException.message}</p>
-        </c:if>
-
-        <br>
-        <br>
-        <button onclick="window.location.href = 'Techniker-Anlegen3.jsp';" class="btn btn-primary">Continue with entering the technician
-            data
-        </button>
-
     </c:if>
 
 </div>
-
-<c:if test="${empty param.angestelltennummer || empty param.kontonummer || empty param.bankleitzahl || empty param.kontostand || empty param.bankname}">
-    <c:if test="${empty param.angestelltennummer }">
-        <p>Employee number was missing </p>
-    </c:if>
-    <c:if test="${empty param.kontonummer }">
-        <p>Account number was missing}</p>
-    </c:if>
-    <c:if test="${empty param.bankleitzahl }">
-        <p>Bank code was missing </p>
-    </c:if>
-    <c:if test="${empty param.bankname }">
-        <p>Bank name was missing </p>
-    </c:if>
-    <c:if test="${empty param.kontostand }">
-        <p>Account balance was missing. If no account balance is known, please enter 0. </p>
-    </c:if>
-</c:if>
-</c:if>
-
 
 </c:if>
 
