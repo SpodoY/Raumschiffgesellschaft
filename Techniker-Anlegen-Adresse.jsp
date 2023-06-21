@@ -76,7 +76,7 @@
         <input type="hidden" name="menu" value="Adressdaten"/>
 
         <label for="strasse2">Street:</label>
-        <input type="text" id="strasse2" name="strasse2" placeholder="Favoritenstrasse" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
+        <input type="text" id="strasse2" name="strasse2" placeholder="Favoritenstrasse" pattern="[A-Za-z\s]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <label for="hausnummer2">House number:</label>
         <input type="text" id="hausnummer2" name="hausnummer2" placeholder="226" pattern="^\d{1,5}$" title="Please enter 1 to 5 numbers"><br>
@@ -85,7 +85,7 @@
         <input type="text" id="postleitzahl2" name="postleitzahl2" placeholder="1100" pattern="^\d{1,5}$" title="Please enter 1 to 5 numbers"><br>
 
         <label for="ort2">City:</label>
-        <input type="text" id="ort2" name="ort2" placeholder="Wien" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
+        <input type="text" id="ort2" name="ort2" placeholder="Wien" pattern="[A-Za-z\s]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <br><br>
         <input type="Submit" class="btn btn-primary" value="Submit new address and continue with create technician">

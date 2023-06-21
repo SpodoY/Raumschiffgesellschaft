@@ -181,7 +181,7 @@
         <input type="text" id="kontonummer" name="kontonummer" placeholder="123456789" pattern="\d{10,15}" title="Please enter a valid account number" required><br>
 
         <label for="bankleitzahl">Bank code:</label>
-        <input type="text" id="bankleitzahl" name="bankleitzahl" placeholder="12345678901" pattern="\d{5,15}" title="Please enter a valid account number" required><br>
+        <input type="text" id="bankleitzahl" name="bankleitzahl" placeholder="AT12345678901" pattern="[A-Z0-9]{5,15}" title="Please enter a valid account number" required><br>
 
         <label for="bankname">Bank name:</label>
         <input type="text" id="bankname" name="bankname" placeholder="Sparkasse" pattern="[A-Za-z]{1,100}" title="Please enter a valid bank name" required><br>

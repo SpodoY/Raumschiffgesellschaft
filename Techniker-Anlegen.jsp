@@ -76,7 +76,7 @@
         <input type="tel" id="telefonnummer2" name="telefonnummer2" pattern="[0-9]{9,14}" placeholder="066412345678"><br>
 
         <label for="strasse">Street:</label>
-        <input type="text" id="strasse" name="strasse" placeholder="Favoritenstrasse" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
+        <input type="text" id="strasse" name="strasse" placeholder="Favoritenstrasse" pattern="[A-Za-z\s]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <label for="hausnummer">House number:</label>
         <input type="text" id="hausnummer" name="hausnummer" placeholder="226" pattern="^\d{1,5}$" title="Please enter 1 to 5 numbers"><br>
@@ -85,7 +85,7 @@
         <input type="text" id="postleitzahl" name="postleitzahl" placeholder="1100" pattern="^\d{1,5}$" title="Please enter 1 to 5 numbers"><br>
 
         <label for="ort">City:</label>
-        <input type="text" id="ort" name="ort" placeholder="Wien" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
+        <input type="text" id="ort" name="ort" placeholder="Wien" pattern="[A-Za-z\s]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <br><br>
         <input type="Submit" class="btn btn-primary" value="Submit">
