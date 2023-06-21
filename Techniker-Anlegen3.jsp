@@ -14,7 +14,7 @@
 </style>
 
 <head>
-    <title>Flug Buchen</title>
+    <title>Techniker anlegen</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -136,7 +136,7 @@
         <input type="hidden" name="menu" value="Techniker_Anlegen3"/>
 
         <label for="lizenznummer">License number:</label>
-        <input type="text" id="lizenznummer" name="lizenznummer" placeholder="T111111111"><br>
+        <input type="text" id="lizenznummer" name="lizenznummer" placeholder="T111111111" pattern="T\d{9}" title="Please enter a valid License number"><br>
 
         <label for="ausbildungsgrad">Training degree:</label>
         <select class="form-control" name="ausbildungsgrad" id="ausbildungsgrad" size="1">
@@ -263,7 +263,7 @@
         <p>License number was missing </p>
     </c:if>
     <c:if test="${empty param.ausbildungsgrad }">
-        <p>Training degree was missing}</p>
+        <p>Training degree was missing</p>
     </c:if>
     <c:if test="${empty param.raumschiffTypennummer }">
         <p>Spacecraft type was missing </p>
