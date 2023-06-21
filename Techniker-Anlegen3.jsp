@@ -160,10 +160,10 @@
 
         <label for="lizenznummer">License number:</label>
         <input type="text" id="lizenznummer" name="lizenznummer" placeholder="T111111111" pattern="T\d{9}"
-               title="Please enter a valid License number"><br>
+               title="Please enter a valid License number" required><br>
 
         <label for="ausbildungsgrad">Training degree:</label>
-        <select class="form-control" name="ausbildungsgrad" id="ausbildungsgrad" size="1">
+        <select class="form-control" name="ausbildungsgrad" id="ausbildungsgrad" size="1" required>
             <option value="">Please select an option</option>
 
             <sql:query var="grade"
@@ -179,7 +179,7 @@
         </select>
 
         <label for="raumschiffTypennummer">Takes over the maintenance of the spacecraft type:</label>
-        <select class="form-control" name="raumschiffTypennummer" id="raumschiffTypennummer" size="1">
+        <select class="form-control" name="raumschiffTypennummer" id="raumschiffTypennummer" size="1" required>
             <option value="">Please select an option</option>
 
             <sql:query var="typennummern"
@@ -200,101 +200,122 @@
         <br>
     </form>
 
-
-    <c:if test="${!empty param.menu }">
-
-    <c:if test="${!empty param.lizenznummer && !empty param.ausbildungsgrad && !empty param.raumschiffTypennummer}">
-
-    <c:set var="techniker_id" scope="session" value="${param.lizenznummer}"/>
-
-    <c:catch var="catchTechnikerException">
-        <sql:update var="techniker"
-                    sql="INSERT INTO Techniker (Lizenznummer, Angestelltennummer, Ausbildungsgrad, WartetRaumschifftyp) VALUES (?,?,?,?)">
-            <sql:param value="${techniker_id}"/>
-            <sql:param value="${angestellten_id}"/>
-            <sql:param value="${param.ausbildungsgrad}"/>
-            <sql:param value="${param.raumschiffTypennummer}"/>
-        </sql:update>
-    </c:catch>
-
-
-    <h3> Employee has been successfully entered: </h3>
-
-    <c:catch var="catchShowTechnikerException">
-        <sql:query var="angelegterTechniker"
-                   sql="SELECT p.*, a.*, t.*, r.*, h.Telefonnummer, b.Bankname FROM Person p JOIN Angestellter a ON p.Sozialversicherungsnummer = a.Sozialversicherungsnummer JOIN Techniker t ON a.Angestelltennummer = t.Angestelltennummer JOIN Raumschifftyp r ON t.WartetRaumschifftyp = r.Typennummer JOIN Hat_Telefonnummer h ON p.Sozialversicherungsnummer = h.Sozialversicherungsnummer JOIN Bank b ON a.Bankleitzahl = b.Bankleitzahl WHERE t.Lizenznummer Like ?">
-            <sql:param value="${techniker_id}"/>
+    <c:catch var="catchCheckTechnikNrPossible">
+        <sql:query var="checkTechnikNrPossible"
+                   sql="SELECT COUNT(*) AS TechnkiNrExistsAttribute FROM Techniker WHERE Lizenznummer LIKE ?">
+            <sql:param value="${param.lizenznummer}"/>
         </sql:query>
-
-        <div>
-            <h4>Personal data</h4>
-            <p><b>${angelegterTechniker.rows[0].Vorname} ${angelegterTechniker.rows[0].Nachname}</b></p>
-            <p>Sozialversicherungsnummer: <b>${angelegterTechniker.rows[0].Sozialversicherungsnummer}</b></p>
-            <p>
-                Address: ${angelegterTechniker.rows[0].Strasse} ${angelegterTechniker.rows[0].Hausnummer}, ${angelegterTechniker.rows[0].Postleitzahl} ${angelegterTechniker.rows[0].Ort}</p>
-            <table class="table table-striped table-dark" border="1">
-                <tr>
-                    <th>Phone number(s)</th>
-                </tr>
-                <c:forEach var="Datensatz" begin="0" items="${angelegterTechniker.rowsByIndex}">
-                    <tr>
-                        <td>${Datensatz[21]}</td>
-                    </tr>
-                </c:forEach>
-            </table>
-            <br>
-            <h4>Employee data</h4>
-            <p>Employee number: <b>${angelegterTechniker.rows[0].Angestelltennummer}</b></p>
-            <p>Account number: ${angelegterTechniker.rows[0].Kontonummer}</p>
-            <p>Bank code: ${angelegterTechniker.rows[0].Bankleitzahl}</p>
-            <p>Bank name: ${angelegterTechniker.rows[0].Bankname}</p>
-            <p>Account balance: ${angelegterTechniker.rows[0].Kontostand}</p>
-            <br>
-            <h4>Technician data</h4>
-            <p>License number: <b>${angelegterTechniker.rows[0].Lizenznummer}</b></p>
-            <p>Training degree: ${angelegterTechniker.rows[0].Ausbildungsgrad}</p>
-            <p>Takes over the maintenance of the spacecraft type: ${angelegterTechniker.rows[0].Typennummer}</p>
-            <br>
-            <h4>Spaceship type information</h4>
-            <p>Type name: <b>${angelegterTechniker.rows[0].Typenbezeichnung}</b></p>
-            <p>Manufacturer name: <b>${angelegterTechniker.rows[0].Herstellername}</b></p>
-            <p>Number of seats: ${angelegterTechniker.rows[0].Sitzplatzanzahl}</p>
-            <p>Support staff: ${angelegterTechniker.rows[0].Begleitpersonal}</p>
-
-        </div>
     </c:catch>
 
-    <c:if test="${catchTechnikerException != null}">
-        <!--<p>The type of exception is : ${catchTechnikerException} <br/>
-        There is an exception: ${catchTechnikerException.message}</p>-->
+    <c:if test="${catchCheckTechnikNrPossible != null}">
+        <!--<p>The type of exception is : ${catchCheckTechnikNrPossible} <br/>
+        There is an exception: ${catchCheckTechnikNrPossible.message}</p>-->
     </c:if>
 
-    <c:if test="${catchShowTechnikerException != null}">
-        <!--<p>The type of exception is : ${catchShowTechnikerException} <br/>
-        There is an exception: ${catchShowTechnikerException.message}</p>-->
+    <c:if test="${checkTechnikNrPossible.rows[0].TechnkiNrExistsAttribute > 0}">
+        <br>
+        <br>
+        <p>This technician number already exists for another employee! Please enter the correct Number. </p>
+
     </c:if>
 
-    <br>
-    <br>
-    <button onclick="window.location.href = 'index.jsp';" class="btn btn-primary">Get back to Home
-    </button>
+    <c:if test="${checkTechnikNrPossible.rows[0].TechnkiNrExistsAttribute == 0}">
+
+        <c:if test="${!empty param.menu }">
+
+            <c:if test="${!empty param.lizenznummer && !empty param.ausbildungsgrad && !empty param.raumschiffTypennummer}">
+
+                <c:set var="techniker_id" scope="session" value="${param.lizenznummer}"/>
+
+                <c:catch var="catchTechnikerException">
+                    <sql:update var="techniker"
+                                sql="INSERT INTO Techniker (Lizenznummer, Angestelltennummer, Ausbildungsgrad, WartetRaumschifftyp) VALUES (?,?,?,?)">
+                        <sql:param value="${techniker_id}"/>
+                        <sql:param value="${angestellten_id}"/>
+                        <sql:param value="${param.ausbildungsgrad}"/>
+                        <sql:param value="${param.raumschiffTypennummer}"/>
+                    </sql:update>
+                </c:catch>
+
+
+                <h3> Employee has been successfully entered: </h3>
+
+                <c:catch var="catchShowTechnikerException">
+                    <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer == person_id}">
+                        <sql:query var="angelegterTechniker"
+                                   sql="SELECT p.*, a.*, t.*, r.*, h.Telefonnummer, b.Bankname FROM Person p JOIN Angestellter a ON p.Sozialversicherungsnummer = a.Sozialversicherungsnummer JOIN Techniker t ON a.Angestelltennummer = t.Angestelltennummer JOIN Raumschifftyp r ON t.WartetRaumschifftyp = r.Typennummer JOIN Hat_Telefonnummer h ON p.Sozialversicherungsnummer = h.Sozialversicherungsnummer JOIN Bank b ON a.Bankleitzahl = b.Bankleitzahl WHERE t.Lizenznummer Like ?">
+                            <sql:param value="${techniker_id}"/>
+                        </sql:query>
+                    </c:if>
+
+                    <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer != person_id}">
+                        <sql:query var="angelegterTechniker"
+                                   sql="SELECT p.*, a.*, t.*, r.*, b.Bankname FROM Person p JOIN Angestellter a ON p.Sozialversicherungsnummer = a.Sozialversicherungsnummer JOIN Techniker t ON a.Angestelltennummer = t.Angestelltennummer JOIN Raumschifftyp r ON t.WartetRaumschifftyp = r.Typennummer JOIN Bank b ON a.Bankleitzahl = b.Bankleitzahl WHERE t.Lizenznummer Like ?">
+                            <sql:param value="${techniker_id}"/>
+                        </sql:query>
+                    </c:if>
+
+                    <div>
+                        <h4>Personal data</h4>
+                        <p><b>${angelegterTechniker.rows[0].Vorname} ${angelegterTechniker.rows[0].Nachname}</b></p>
+                        <p>Sozialversicherungsnummer: <b>${angelegterTechniker.rows[0].Sozialversicherungsnummer}</b>
+                        </p>
+                        <p>
+                            Address: ${angelegterTechniker.rows[0].Strasse} ${angelegterTechniker.rows[0].Hausnummer}, ${angelegterTechniker.rows[0].Postleitzahl} ${angelegterTechniker.rows[0].Ort}</p>
+                        <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer == person_id}">
+                            <table class="table table-striped table-dark" border="1">
+                                <tr>
+                                    <th>Phone number(s)</th>
+                                </tr>
+                                <c:forEach var="Datensatz" begin="0" items="${angelegterTechniker.rowsByIndex}">
+                                    <tr>
+                                        <td>${Datensatz[21]}</td>
+                                    </tr>
+                                </c:forEach>
+                            </table>
+                        </c:if>
+                        <br>
+                        <h4>Employee data</h4>
+                        <p>Employee number: <b>${angelegterTechniker.rows[0].Angestelltennummer}</b></p>
+                        <p>Account number: ${angelegterTechniker.rows[0].Kontonummer}</p>
+                        <p>Bank code: ${angelegterTechniker.rows[0].Bankleitzahl}</p>
+                        <p>Bank name: ${angelegterTechniker.rows[0].Bankname}</p>
+                        <p>Account balance: ${angelegterTechniker.rows[0].Kontostand}</p>
+                        <br>
+                        <h4>Technician data</h4>
+                        <p>License number: <b>${angelegterTechniker.rows[0].Lizenznummer}</b></p>
+                        <p>Training degree: ${angelegterTechniker.rows[0].Ausbildungsgrad}</p>
+                        <p>Takes over the maintenance of the spacecraft
+                            type: ${angelegterTechniker.rows[0].Typennummer}</p>
+                        <br>
+                        <h4>Spaceship type information</h4>
+                        <p>Type name: <b>${angelegterTechniker.rows[0].Typenbezeichnung}</b></p>
+                        <p>Manufacturer name: <b>${angelegterTechniker.rows[0].Herstellername}</b></p>
+                        <p>Number of seats: ${angelegterTechniker.rows[0].Sitzplatzanzahl}</p>
+                        <p>Support staff: ${angelegterTechniker.rows[0].Begleitpersonal}</p>
+
+                    </div>
+                </c:catch>
+
+                <c:if test="${catchTechnikerException != null}">
+                    <!--<p>The type of exception is : ${catchTechnikerException} <br/>
+                    There is an exception: ${catchTechnikerException.message}</p>-->
+                </c:if>
+
+                <c:if test="${catchShowTechnikerException != null}">
+                    <!--<p>The type of exception is : ${catchShowTechnikerException} <br/>
+                    There is an exception: ${catchShowTechnikerException.message}</p>-->
+                </c:if>
+
+                <br>
+                <br>
+                <button onclick="window.location.href = 'index.jsp';" class="btn btn-primary">Get back to Home
+                </button>
+
+            </c:if>
+        </c:if>
+    </c:if>
 </div>
-
-</c:if>
-
-<c:if test="${empty param.lizenznummer || empty param.ausbildungsgrad || empty raumschiffTypennummer}">
-    <c:if test="${empty param.lizenznummer }">
-        <p>License number was missing </p>
-    </c:if>
-    <c:if test="${empty param.ausbildungsgrad }">
-        <p>Training degree was missing</p>
-    </c:if>
-    <c:if test="${empty param.raumschiffTypennummer }">
-        <p>Spacecraft type was missing </p>
-    </c:if>
-</c:if>
-</c:if>
-
 </c:if>
 
 

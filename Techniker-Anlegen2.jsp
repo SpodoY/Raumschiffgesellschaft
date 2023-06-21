@@ -83,15 +83,15 @@
     </c:if>
 
     <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer == person_id}">
-    <c:catch var="catchShowPerson2Exception">
-        <sql:query var="angelegtePerson2"
-                   sql="SELECT Person.*, Hat_Telefonnummer.Telefonnummer FROM Person JOIN Hat_Telefonnummer ON Person.Sozialversicherungsnummer = Hat_Telefonnummer.Sozialversicherungsnummer WHERE Person.Sozialversicherungsnummer  Like ?">
-            <sql:param value="${person_id}"/>
-        </sql:query>
+        <c:catch var="catchShowPerson2Exception">
+            <sql:query var="angelegtePerson2"
+                       sql="SELECT Person.*, Hat_Telefonnummer.Telefonnummer FROM Person JOIN Hat_Telefonnummer ON Person.Sozialversicherungsnummer = Hat_Telefonnummer.Sozialversicherungsnummer WHERE Person.Sozialversicherungsnummer  Like ?">
+                <sql:param value="${person_id}"/>
+            </sql:query>
 
-        <c:set var="angelegte_Person" scope="session" value="${angelegtePerson2}"/>
+            <c:set var="angelegte_Person" scope="session" value="${angelegtePerson2}"/>
 
-    </c:catch>
+        </c:catch>
     </c:if>
 
     <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer != person_id}">
@@ -225,88 +225,109 @@
         <input type="submit" value="Submit" class="btn btn-primary">
     </form>
 
+    <c:catch var="catchCheckAngNrPossible">
+        <sql:query var="checkAngNrPossible"
+                   sql="SELECT COUNT(*) AS AngNrExistsAttribute FROM Angestellter WHERE Angestelltennummer LIKE ?">
+            <sql:param value="${param.angestelltennummer}"/>
+        </sql:query>
+    </c:catch>
 
-    <c:if test="${!empty param.menu }">
+    <c:if test="${catchCheckAngNrPossible != null}">
+        <!--<p>The type of exception is : ${catchCheckAngNrPossible} <br/>
+        There is an exception: ${catchCheckAngNrPossible.message}</p>-->
+    </c:if>
 
-        <c:if test="${!empty param.angestelltennummer && !empty param.kontonummer && !empty param.bankleitzahl && !empty param.kontostand && !empty param.bankname}">
-
-            <c:set var="angestellten_id" scope="session" value="${param.angestelltennummer}"/>
-
-            <c:catch var="catchBankException">
-                <sql:update var="angestellter"
-                            sql="INSERT INTO Bank (Bankleitzahl, Bankname) VALUES (?,?)">
-                    <sql:param value="${param.bankleitzahl}"/>
-                    <sql:param value="${param.bankname}"/>
-                </sql:update>
-            </c:catch>
-
-            <c:catch var="catchAngestellterException">
-                <sql:update var="angestellter"
-                            sql="INSERT INTO Angestellter (Angestelltennummer, Sozialversicherungsnummer, Kontonummer, Bankleitzahl, Kontostand) VALUES (?,?,?,?,?)">
-                    <sql:param value="${angestellten_id}"/>
-                    <sql:param value="${person_id}"/>
-                    <sql:param value="${param.kontonummer}"/>
-                    <sql:param value="${param.bankleitzahl}"/>
-                    <sql:param value="${param.kontostand}"/>
-
-                </sql:update>
-            </c:catch>
-
-            <br>
-            <br>
-            <h3> Employee has been successfully entered: </h3>
-
-            <c:catch var="catchShowAngestellterException">
-                <sql:query var="angelegteAngestellter"
-                           sql="SELECT a.*, b.Bankname FROM Angestellter a JOIN Bank b ON a.Bankleitzahl = b.Bankleitzahl WHERE a.Angestelltennummer Like ?">
-                    <sql:param value="${angestellten_id}"/>
-                </sql:query>
-
-                <table class="table table-striped table-dark" border="1">
-                    <tr>
-                        <th>Employee Number</th>
-                        <th>Account number</th>
-                        <th>Bank code</th>
-                        <th>Bank name</th>
-                        <th>Account balance</th>
-                    </tr>
-                    <c:forEach var="Datensatz" begin="0" items="${angelegteAngestellter.rowsByIndex}">
-                        <tr>
-                            <td>${Datensatz[0]}</td>
-                            <td>${Datensatz[2]}</td>
-                            <td>${Datensatz[3]}</td>
-                            <td>${Datensatz[5]}</td>
-                            <td>${Datensatz[4]}</td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </c:catch>
-
-            <c:if test="${catchBankException != null}">
-                <!--<p>The type of exception is : ${catchBankException} <br/>
-                There is an exception: ${catchBankException.message}</p>-->
-            </c:if>
-
-            <c:if test="${catchAngestellterException != null}">
-                <!--<p>The type of exception is : ${catchAngestellterException} <br/>
-                There is an exception: ${catchAngestellterException.message}</p>-->
-            </c:if>
-
-            <c:if test="${catchShowAngestellterException != null}">
-                <!--<p>The type of exception is : ${catchShowAngestellterException} <br/>
-                There is an exception: ${catchShowAngestellterException.message}</p>-->
-            </c:if>
-
-            <br>
-            <br>
-            <button onclick="window.location.href = 'Techniker-Anlegen3.jsp';" class="btn btn-primary">Continue with
-                entering the technician
-                data
-            </button>
-
-        </c:if>
+    <c:if test="${checkAngNrPossible.rows[0].AngNrExistsAttribute > 0}">
+        <br>
+        <br>
+        <p>This employee number already exists for another employee! Please enter the correct Number. </p>
 
     </c:if>
+
+    <c:if test="${checkAngNrPossible.rows[0].AngNrExistsAttribute == 0}">
+        <c:if test="${!empty param.menu }">
+
+            <c:if test="${!empty param.angestelltennummer && !empty param.kontonummer && !empty param.bankleitzahl && !empty param.kontostand && !empty param.bankname}">
+
+                <c:set var="angestellten_id" scope="session" value="${param.angestelltennummer}"/>
+
+                <c:catch var="catchBankException">
+                    <sql:update var="angestellter"
+                                sql="INSERT INTO Bank (Bankleitzahl, Bankname) VALUES (?,?)">
+                        <sql:param value="${param.bankleitzahl}"/>
+                        <sql:param value="${param.bankname}"/>
+                    </sql:update>
+                </c:catch>
+
+                <c:catch var="catchAngestellterException">
+                    <sql:update var="angestellter"
+                                sql="INSERT INTO Angestellter (Angestelltennummer, Sozialversicherungsnummer, Kontonummer, Bankleitzahl, Kontostand) VALUES (?,?,?,?,?)">
+                        <sql:param value="${angestellten_id}"/>
+                        <sql:param value="${person_id}"/>
+                        <sql:param value="${param.kontonummer}"/>
+                        <sql:param value="${param.bankleitzahl}"/>
+                        <sql:param value="${param.kontostand}"/>
+
+                    </sql:update>
+                </c:catch>
+
+                <br>
+                <br>
+                <h3> Employee has been successfully entered: </h3>
+
+                <c:catch var="catchShowAngestellterException">
+                    <sql:query var="angelegteAngestellter"
+                               sql="SELECT a.*, b.Bankname FROM Angestellter a JOIN Bank b ON a.Bankleitzahl = b.Bankleitzahl WHERE a.Angestelltennummer Like ?">
+                        <sql:param value="${angestellten_id}"/>
+                    </sql:query>
+
+                    <table class="table table-striped table-dark" border="1">
+                        <tr>
+                            <th>Employee Number</th>
+                            <th>Account number</th>
+                            <th>Bank code</th>
+                            <th>Bank name</th>
+                            <th>Account balance</th>
+                        </tr>
+                        <c:forEach var="Datensatz" begin="0" items="${angelegteAngestellter.rowsByIndex}">
+                            <tr>
+                                <td>${Datensatz[0]}</td>
+                                <td>${Datensatz[2]}</td>
+                                <td>${Datensatz[3]}</td>
+                                <td>${Datensatz[5]}</td>
+                                <td>${Datensatz[4]}</td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </c:catch>
+
+                <c:if test="${catchBankException != null}">
+                    <!--<p>The type of exception is : ${catchBankException} <br/>
+                    There is an exception: ${catchBankException.message}</p>-->
+                </c:if>
+
+                <c:if test="${catchAngestellterException != null}">
+                    <!--<p>The type of exception is : ${catchAngestellterException} <br/>
+                    There is an exception: ${catchAngestellterException.message}</p>-->
+                </c:if>
+
+                <c:if test="${catchShowAngestellterException != null}">
+                    <!--<p>The type of exception is : ${catchShowAngestellterException} <br/>
+                    There is an exception: ${catchShowAngestellterException.message}</p>-->
+                </c:if>
+
+                <br>
+                <br>
+                <button onclick="window.location.href = 'Techniker-Anlegen3.jsp';" class="btn btn-primary">Continue with
+                    entering the technician
+                    data
+                </button>
+
+            </c:if>
+
+        </c:if>
+    </c:if>
+
 
 </div>
 
