@@ -145,11 +145,23 @@
 
 
       <c:otherwise>
-        <sql:update var="booklog" sql="UPDATE Raumschiff SET Logbuchentlehner = ? WHERE Code = ?">
-          <sql:param value="${booklog_id}"/>
-          <sql:param value="${param.code}"/>
-        </sql:update>
 
+        <sql:query var="isAlreadyBookd"
+                   sql="SELECT count(*) AS count from Raumschiff Where code = ? and Logbuchentlehner is not null ">
+          <sql:param value="${param.code}"/>
+        </sql:query>
+
+        <c:if test="${isAlreadyBookd.rows[0].count eq 0}">
+          <sql:update var="booklog" sql="UPDATE Raumschiff SET Logbuchentlehner = ? WHERE Code = ?">
+            <sql:param value="${booklog_id}"/>
+            <sql:param value="${param.code}"/>
+          </sql:update>
+        </c:if>
+        <c:if test="${isAlreadyBookd.rows[0].count eq 1}">
+
+          <h1> This logbook is already lent </h1>
+
+        </c:if>
       </c:otherwise>
     </c:choose>
   </c:if>
