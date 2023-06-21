@@ -14,7 +14,7 @@
 </style>
 
 <head>
-    <title>Flug Buchen</title>
+    <title>Techniker anlegen</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -175,20 +175,19 @@
         <input type="hidden" name="menu" value="Techniker_Anlegen2"/>
 
         <label for="angestelltennummer">Employee Number:</label>
-        <input type="text" id="angestelltennummer" name="angestelltennummer"
-               placeholder="A123456789"><br>
+        <input type="text" id="angestelltennummer" name="angestelltennummer" placeholder="A123456789" pattern="A\d{9}" title="Please enter a valid employee number"><br>
 
         <label for="kontonummer">Account number:</label>
-        <input type="text" id="kontonummer" name="kontonummer" placeholder="123456789"><br>
+        <input type="text" id="kontonummer" name="kontonummer" placeholder="123456789" pattern="\d{10,15}" title="Please enter a valid account number"><br>
 
         <label for="bankleitzahl">Bank code:</label>
-        <input type="text" id="bankleitzahl" name="bankleitzahl" placeholder="12345678901"><br>
+        <input type="text" id="bankleitzahl" name="bankleitzahl" placeholder="12345678901" pattern="\d{5,15}" title="Please enter a valid account number"><br>
 
         <label for="bankname">Bank name:</label>
-        <input type="text" id="bankname" name="bankname" placeholder="Sparkasse"><br>
+        <input type="text" id="bankname" name="bankname" placeholder="Sparkasse" pattern="[A-Za-z]{1,100}" title="Please enter a valid bank name"><br>
 
         <label for="kontostand">Account balance:</label>
-        <input type="text" id="kontostand" name="kontostand" placeholder="0.00"><br>
+        <input type="text" id="kontostand" name="kontostand" placeholder="0.00" pattern="\d+(\.\d{1,2})?" title="Please enter a valid account balance"><br>
 
         <br><br>
         <input type="submit" value="Submit" class="btn btn-primary">
@@ -281,7 +280,7 @@
                 <p>Employee number was missing </p>
             </c:if>
             <c:if test="${empty param.kontonummer }">
-                <p>Account number was missing}</p>
+                <p>Account number was missing</p>
             </c:if>
             <c:if test="${empty param.bankleitzahl }">
                 <p>Bank code was missing </p>

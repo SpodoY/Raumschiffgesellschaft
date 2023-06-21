@@ -14,7 +14,7 @@
 </style>
 
 <head>
-    <title>Flug Buchen</title>
+    <title>Techniker anlegen</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -76,16 +76,16 @@
         <input type="hidden" name="menu" value="Adressdaten"/>
 
         <label for="strasse2">Street:</label>
-        <input type="text" id="strasse2" name="strasse2" placeholder="Favoritenstrasse"><br>
+        <input type="text" id="strasse2" name="strasse2" placeholder="Favoritenstrasse" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <label for="hausnummer2">House number:</label>
-        <input type="text" id="hausnummer2" name="hausnummer2" placeholder="226"><br>
+        <input type="text" id="hausnummer2" name="hausnummer2" placeholder="226" pattern="^\d{1,5}$" title="Please enter 1 to 5 numbers"><br>
 
         <label for="postleitzahl2">Postal Code:</label>
-        <input type="text" id="postleitzahl2" name="postleitzahl2" placeholder="1100"><br>
+        <input type="text" id="postleitzahl2" name="postleitzahl2" placeholder="1100" pattern="^\d{1,5}$" title="Please enter 1 to 5 numbers"><br>
 
         <label for="ort2">City:</label>
-        <input type="text" id="ort2" name="ort2" placeholder="Wien"><br>
+        <input type="text" id="ort2" name="ort2" placeholder="Wien" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <br><br>
         <input type="Submit" class="btn btn-primary" value="Submit new address and continue with create technician">
@@ -100,7 +100,7 @@
                 <p>Street was missing </p>
             </c:if>
             <c:if test="${empty param.hausnummer2 }">
-                <p>House number was missing}</p>
+                <p>House number was missing</p>
             </c:if>
             <c:if test="${empty param.postleitzahl2 }">
                 <p>Postal code was missing </p>

@@ -14,7 +14,7 @@
 </style>
 
 <head>
-    <title>Flug Buchen</title>
+    <title>Techniker anlegen</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -60,14 +60,13 @@
         <input type="hidden" name="menu" value="Techniker_Anlegen"/>
 
         <label for="sozialversicherungsnummer">Sozialversicherungsnummer:</label>
-        <input type="text" id="sozialversicherungsnummer" name="sozialversicherungsnummer" pattern=".{10}"
-               placeholder="1234010190"><br>
+        <input type="number" id="sozialversicherungsnummer" name="sozialversicherungsnummer" placeholder="1098765432" pattern="\d{10}" title="Please enter 10 numbers"><br>
 
         <label for="vorname">First Name:</label>
-        <input type="text" id="vorname" name="vorname" placeholder="Lisa"><br>
+        <input type="text" id="vorname" name="vorname" placeholder="Lisa" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <label for="nachname">Last Name:</label>
-        <input type="text" id="nachname" name="nachname" placeholder="Musterfrau"><br>
+        <input type="text" id="nachname" name="nachname" placeholder="Musterfrau" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <label for="telefonnummer0">Phone Number (optional):</label>
         <input type="text" id="telefonnummer0" name="telefonnummer0" placeholder="0664 12345678"><br>
@@ -77,16 +76,16 @@
         <input type="text" id="telefonnummer2" name="telefonnummer2" placeholder="0664 12345678"><br>
 
         <label for="strasse">Street:</label>
-        <input type="text" id="strasse" name="strasse" placeholder="Favoritenstrasse"><br>
+        <input type="text" id="strasse" name="strasse" placeholder="Favoritenstrasse" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <label for="hausnummer">House number:</label>
-        <input type="text" id="hausnummer" name="hausnummer" placeholder="226"><br>
+        <input type="text" id="hausnummer" name="hausnummer" placeholder="226" pattern="^\d{1,5}$" title="Please enter 1 to 5 numbers"><br>
 
         <label for="postleitzahl">Postal Code:</label>
-        <input type="text" id="postleitzahl" name="postleitzahl" placeholder="1100"><br>
+        <input type="text" id="postleitzahl" name="postleitzahl" placeholder="1100" pattern="^\d{1,5}$" title="Please enter 1 to 5 numbers"><br>
 
         <label for="ort">City:</label>
-        <input type="text" id="ort" name="ort" placeholder="Wien"><br>
+        <input type="text" id="ort" name="ort" placeholder="Wien" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <br><br>
         <input type="Submit" class="btn btn-primary" value="Submit">
@@ -237,7 +236,7 @@
         <p>Sozialversicherungsnummer was missing </p>
     </c:if>
     <c:if test="${empty param.vorname }">
-        <p>First name was missing}</p>
+        <p>First name was missing</p>
     </c:if>
     <c:if test="${empty param.nachname }">
         <p>Last name was missing </p>
