@@ -214,7 +214,7 @@
                pattern="[A-Z]{2}[0-9]{3,13}" title="Please enter a valid account number" required><br>
 
         <label for="bankname">Bank name:</label>
-        <input type="text" id="bankname" name="bankname" placeholder="Sparkasse" pattern="[A-Za-z]{1,100}"
+        <input type="text" id="bankname" name="bankname" placeholder="Sparkasse" pattern="[A-Za-z\s]{1,100}"
                title="Please enter a valid bank name" required><br>
 
         <label for="kontostand">Account balance:</label>
