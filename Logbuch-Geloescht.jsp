@@ -4,6 +4,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<style>
+    .main-content {
+        width: 80vw;
+        margin: auto;
+    }
+</style>
+
 <head>
     <title>Logbook booking </title>
     <meta charset="utf-8">
@@ -13,10 +20,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 
-<% pageContext.setAttribute("items", new String[]{"one", "two" , "three" }); %>
+<% pageContext.setAttribute("items", new String[]{"one", "two", "three"}); %>
 
 <sql:setDataSource driver="oracle.jdbc.driver.OracleDriver"
-                   url="jdbc:oracle:thin:@localhost:1521/xepdb1" user="csdc24vz_05" password="Eg3Noht" />
+                   url="jdbc:oracle:thin:@localhost:1521/xepdb1" user="csdc24vz_05" password="Eg3Noht"/>
 
 <html>
 
@@ -39,31 +46,32 @@
     </div>
 </nav>
 
-
-<sql:update var="deleteNormal"
-            sql="UPDATE Raumschiff SET Logbuchentlehner = NUll WHERE Code = ?">
-    <sql:param value="${param.DeletedCode}" />
-</sql:update>
-
-
-<sql:update var="deleteCreated"
-            sql="UPDATE Raumschiff SET Logbuchentlehner = NUll WHERE Code = ?">
-    <sql:param value="${param.Code}" />
-</sql:update>
-
-<h1>Returned Logbook:</h1>
-<h2>${param.DeletedCode}</h2>
+<div class="main-content">
+    <sql:update var="deleteNormal"
+                sql="UPDATE Raumschiff SET Logbuchentlehner = NUll WHERE Code = ?">
+        <sql:param value="${param.DeletedCode}"/>
+    </sql:update>
 
 
-<form method="post" action="Logbuch-Ausleihen.jsp">
-    <button type="submit" class="btn btn-primary"> Zurueck zur Logbuch ausgabe </button>
-</form>
+    <sql:update var="deleteCreated"
+                sql="UPDATE Raumschiff SET Logbuchentlehner = NUll WHERE Code = ?">
+        <sql:param value="${param.Code}"/>
+    </sql:update>
 
-<br/>
+    <h1>Returned Logbook:</h1>
+    <h2>${param.DeletedCode}</h2>
 
-<form method="post" action="Logbuch-Loeschen.jsp">
-    <button type="submit" class="btn btn-primary"> Zurueck zur Logbuch rueckgabe </button>
-</form>
+
+    <form method="post" action="Logbuch-Ausleihen.jsp">
+        <button type="submit" class="btn btn-primary"> Zurueck zur Logbuch ausgabe</button>
+    </form>
+
+    <br/>
+
+    <form method="post" action="Logbuch-Loeschen.jsp">
+        <button type="submit" class="btn btn-primary"> Zurueck zur Logbuch rueckgabe</button>
+    </form>
+</div>
 </body>
 
 </html>

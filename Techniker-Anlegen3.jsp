@@ -39,10 +39,10 @@
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <ul class="nav navbar-nav">
-            <li class="active"><a href="index.jsp">Home</a></li>
+            <li><a href="index.jsp">Home</a></li>
             <li><a href="Flug-Buchen.jsp">Flug Buchen</a></li>
             <li><a href="Flug-Suchen.jsp">Flug suchen</a></li>
-            <li><a href="Techniker-Anlegen.jsp">Neuen Techniker anlegen</a></li>
+            <li class="active"><a href="Techniker-Anlegen.jsp">Neuen Techniker anlegen</a></li>
             <li><a href="Techniker-Flugzeug-exemplar.jsp">Techniker Flugzeug exemplar</a></li>
             <li><a href="Logbuch-Ausleihen.jsp">Ausleihen Logbuch anzeigen</a></li>
             </li>
