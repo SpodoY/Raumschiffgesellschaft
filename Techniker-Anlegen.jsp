@@ -60,7 +60,7 @@
         <input type="hidden" name="menu" value="Techniker_Anlegen"/>
 
         <label for="sozialversicherungsnummer">Sozialversicherungsnummer:</label>
-        <input type="number" id="sozialversicherungsnummer" name="sozialversicherungsnummer" placeholder="1098765432" pattern="\d{10}" title="Please enter 10 numbers"><br>
+        <input type="text" id="sozialversicherungsnummer" name="sozialversicherungsnummer" placeholder="1098765432" pattern="\d{10}" title="Please enter 10 numbers"><br>
 
         <label for="vorname">First Name:</label>
         <input type="text" id="vorname" name="vorname" placeholder="Lisa" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
