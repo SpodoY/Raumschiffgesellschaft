@@ -258,7 +258,6 @@
 
     </c:if>
 
-</div>
 
 <c:if test="${empty param.sozialversicherungsnummer || empty param.vorname || empty param.nachname || empty param.strasse || empty param.hausnummer || empty param.postleitzahl || empty param.ort}">
     <c:if test="${empty param.sozialversicherungsnummer }">
@@ -283,7 +282,7 @@
         <p>City was missing </p>
     </c:if>
 </c:if>
-
+</div>
 
 </c:if>
 
