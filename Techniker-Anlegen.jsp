@@ -39,10 +39,10 @@
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <ul class="nav navbar-nav">
-            <li class="active"><a href="index.jsp">Home</a></li>
+            <li><a href="index.jsp">Home</a></li>
             <li><a href="Flug-Buchen.jsp">Flug Buchen</a></li>
             <li><a href="Flug-Suchen.jsp">Flug suchen</a></li>
-            <li><a href="Techniker-Anlegen.jsp">Neuen Techniker anlegen</a></li>
+            <li class="active"><a href="Techniker-Anlegen.jsp">Neuen Techniker anlegen</a></li>
             <li><a href="Techniker-Flugzeug-exemplar.jsp">Techniker Flugzeug exemplar</a></li>
             <li><a href="Logbuch-Ausleihen.jsp">Ausleihen Logbuch anzeigen</a></li>
             </li>
@@ -69,8 +69,12 @@
         <label for="nachname">Last Name:</label>
         <input type="text" id="nachname" name="nachname" placeholder="Musterfrau"><br>
 
-        <label for="telefonnummer">Phone Number:</label>
-        <input type="text" id="telefonnummer" name="telefonnummer" placeholder="+43 0664 11223344"><br>
+        <label for="telefonnummer0">Phone Number (optional):</label>
+        <input type="text" id="telefonnummer0" name="telefonnummer0" placeholder="0664 12345678"><br>
+        <label for="telefonnummer1">Phone Number (optional):</label>
+        <input type="text" id="telefonnummer1" name="telefonnummer1" placeholder="0664 12345678"><br>
+        <label for="telefonnummer2">Phone Number (optional):</label>
+        <input type="text" id="telefonnummer2" name="telefonnummer2" placeholder="0664 12345678"><br>
 
         <label for="strasse">Street:</label>
         <input type="text" id="strasse" name="strasse" placeholder="Favoritenstrasse"><br>
@@ -92,7 +96,7 @@
 
     <c:if test="${!empty param.menu }">
 
-    <c:if test="${!empty param.sozialversicherungsnummer && !empty param.vorname && !empty param.nachname && !empty param.telefonnummer && !empty param.strasse && !empty param.hausnummer && !empty param.postleitzahl && !empty param.ort}">
+    <c:if test="${!empty param.sozialversicherungsnummer && !empty param.vorname && !empty param.nachname && !empty param.strasse && !empty param.hausnummer && !empty param.postleitzahl && !empty param.ort}">
 
         <c:set var="person_id" scope="session" value="${param.sozialversicherungsnummer}"/>
 
@@ -116,13 +120,45 @@
             </sql:update>
         </c:catch>
 
-        <c:catch var="catchTelefonException">
-            <sql:update var="telefonnummer"
-                        sql="INSERT INTO Hat_Telefonnummer (Telefonnummer, Sozialversicherungsnummer) VALUES (?,?)">
-                <sql:param value="${param.telefonnummer}"/>
-                <sql:param value="${person_id}"/>
-            </sql:update>
-        </c:catch>
+        <c:if test="${!empty param.telefonnummer1}">
+            <c:catch var="catchTelefonException1">
+                <sql:update var="telefonnummerUpdate1"
+                            sql="INSERT INTO Hat_Telefonnummer (Telefonnummer, Sozialversicherungsnummer) VALUES (?,?)">
+                    <sql:param value="${param.telefonnummer1}"/>
+                    <sql:param value="${person_id}"/>
+                </sql:update>
+            </c:catch>
+            <c:if test="${catchTelefonException1 != null}">
+                <!--<p>The type of exception is : ${catchTelefonException1} <br/>
+                There is an exception: ${catchTelefonException1.message}</p>-->
+            </c:if>
+        </c:if>
+        <c:if test="${!empty param.telefonnummer2}">
+            <c:catch var="catchTelefonException2">
+                <sql:update var="telefonnummerUpdate2"
+                            sql="INSERT INTO Hat_Telefonnummer (Telefonnummer, Sozialversicherungsnummer) VALUES (?,?)">
+                    <sql:param value="${param.telefonnummer2}"/>
+                    <sql:param value="${person_id}"/>
+                </sql:update>
+            </c:catch>
+            <c:if test="${catchTelefonException2 != null}">
+                <!--<p>The type of exception is : ${catchTelefonException2} <br/>
+                There is an exception: ${catchTelefonException2.message}</p>-->
+            </c:if>
+        </c:if>
+        <c:if test="${!empty param.telefonnummer3}">
+            <c:catch var="catchTelefonException3">
+                <sql:update var="telefonnummerUpdate3"
+                            sql="INSERT INTO Hat_Telefonnummer (Telefonnummer, Sozialversicherungsnummer) VALUES (?,?)">
+                    <sql:param value="${param.telefonnummer3}"/>
+                    <sql:param value="${person_id}"/>
+                </sql:update>
+            </c:catch>
+            <c:if test="${catchTelefonException3 != null}">
+                <!--<p>The type of exception is : ${catchTelefonException3} <br/>
+                There is an exception: ${catchTelefonException3.message}</p>-->
+            </c:if>
+        </c:if>
 
         <c:if test="${SVPerson.rows[0].Sozialversicherungsnummer != person_id}">
             <h3> Person has been successfully entered: </h3>
@@ -177,11 +213,6 @@
             There is an exception: ${catchPersonException.message}</p>-->
         </c:if>
 
-        <c:if test="${catchTelefonException != null}">
-            <!--<p>The type of exception is : ${catchTelefonException} <br/>
-            There is an exception: ${catchTelefonException.message}</p>-->
-        </c:if>
-
         <c:if test="${catchShowPersonException != null}">
             <!--<p>The type of exception is : ${catchShowPersonException} <br/>
             There is an exception: ${catchShowPersonException.message}</p>-->
@@ -201,7 +232,7 @@
 
 </div>
 
-<c:if test="${empty param.sozialversicherungsnummer || empty param.vorname || empty param.nachname || empty param.telefonnummer || empty param.strasse || empty param.hausnummer || empty param.postleitzahl || empty param.ort}">
+<c:if test="${empty param.sozialversicherungsnummer || empty param.vorname || empty param.nachname || empty param.strasse || empty param.hausnummer || empty param.postleitzahl || empty param.ort}">
     <c:if test="${empty param.sozialversicherungsnummer }">
         <p>Sozialversicherungsnummer was missing </p>
     </c:if>
@@ -210,9 +241,6 @@
     </c:if>
     <c:if test="${empty param.nachname }">
         <p>Last name was missing </p>
-    </c:if>
-    <c:if test="${empty param.telefonnummer }">
-        <p>Phone number was missing </p>
     </c:if>
     <c:if test="${empty param.strasse }">
         <p>Street was missing </p>
@@ -234,4 +262,3 @@
 
 </body>
 </html>
-
