@@ -69,11 +69,11 @@
         <input type="text" id="nachname" name="nachname" placeholder="Musterfrau" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
 
         <label for="telefonnummer0">Phone Number (optional):</label>
-        <input type="text" id="telefonnummer0" name="telefonnummer0" placeholder="0664 12345678"><br>
+        <input type="tel" id="telefonnummer0" name="telefonnummer0" pattern="[0-9]{9,14}" placeholder="066412345678"><br>
         <label for="telefonnummer1">Phone Number (optional):</label>
-        <input type="text" id="telefonnummer1" name="telefonnummer1" placeholder="0664 12345678"><br>
+        <input type="tel" id="telefonnummer1" name="telefonnummer1" pattern="[0-9]{9,14}" placeholder="066412345678"><br>
         <label for="telefonnummer2">Phone Number (optional):</label>
-        <input type="text" id="telefonnummer2" name="telefonnummer2" placeholder="0664 12345678"><br>
+        <input type="tel" id="telefonnummer2" name="telefonnummer2" pattern="[0-9]{9,14}" placeholder="066412345678"><br>
 
         <label for="strasse">Street:</label>
         <input type="text" id="strasse" name="strasse" placeholder="Favoritenstrasse" pattern="[A-Za-z]{1,100}" title="Please enter a maximum of 100 alphabetical characters"><br>
@@ -119,6 +119,19 @@
             </sql:update>
         </c:catch>
 
+        <c:if test="${!empty param.telefonnummer0}">
+            <c:catch var="catchTelefonException0">
+                <sql:update var="telefonnummerUpdate0"
+                            sql="INSERT INTO Hat_Telefonnummer (Telefonnummer, Sozialversicherungsnummer) VALUES (?,?)">
+                    <sql:param value="${param.telefonnummer0}"/>
+                    <sql:param value="${person_id}"/>
+                </sql:update>
+            </c:catch>
+            <c:if test="${catchTelefonException0 != null}">
+                <!--<p>The type of exception is : ${catchTelefonException0} <br/>
+                There is an exception: ${catchTelefonException0.message}</p>-->
+            </c:if>
+        </c:if>
         <c:if test="${!empty param.telefonnummer1}">
             <c:catch var="catchTelefonException1">
                 <sql:update var="telefonnummerUpdate1"
@@ -145,19 +158,6 @@
                 There is an exception: ${catchTelefonException2.message}</p>-->
             </c:if>
         </c:if>
-        <c:if test="${!empty param.telefonnummer3}">
-            <c:catch var="catchTelefonException3">
-                <sql:update var="telefonnummerUpdate3"
-                            sql="INSERT INTO Hat_Telefonnummer (Telefonnummer, Sozialversicherungsnummer) VALUES (?,?)">
-                    <sql:param value="${param.telefonnummer3}"/>
-                    <sql:param value="${person_id}"/>
-                </sql:update>
-            </c:catch>
-            <c:if test="${catchTelefonException3 != null}">
-                <!--<p>The type of exception is : ${catchTelefonException3} <br/>
-                There is an exception: ${catchTelefonException3.message}</p>-->
-            </c:if>
-        </c:if>
 
         <c:if test="${SVPerson.rows[0].Sozialversicherungsnummer != person_id}">
             <h3> Person has been successfully entered: </h3>
@@ -169,11 +169,38 @@
 
         <br>
 
-        <c:catch var="catchShowPersonException">
-            <sql:query var="angelegtePerson"
-                       sql="SELECT Person.*, Hat_Telefonnummer.Telefonnummer FROM Person JOIN Hat_Telefonnummer ON Person.Sozialversicherungsnummer = Hat_Telefonnummer.Sozialversicherungsnummer WHERE Person.Sozialversicherungsnummer  Like ?">
+        <c:catch var="catchTelefonExistsException">
+            <sql:query var="telefonnummerExistsCheck"
+                       sql="SELECT Sozialversicherungsnummer FROM Hat_Telefonnummer WHERE Sozialversicherungsnummer LIKE ?">
                 <sql:param value="${person_id}"/>
             </sql:query>
+        </c:catch>
+        <c:if test="${catchTelefonExistsException != null}">
+            <!--<p>The type of exception is : ${catchTelefonExistsException} <br/>
+            There is an exception: ${catchTelefonExistsException.message}</p>-->
+        </c:if>
+
+
+        <c:catch var="catchShowPersonException">
+
+            <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer != person_id}">
+                <c:catch var="catchShowPersonException">
+                    <sql:query var="angelegtePerson"
+                               sql="SELECT * FROM Person WHERE Sozialversicherungsnummer  Like ?">
+                        <sql:param value="${person_id}"/>
+                    </sql:query>
+                </c:catch>
+            </c:if>
+
+            <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer == person_id}">
+                <c:catch var="catchShowPersonException">
+                    <sql:query var="angelegtePerson"
+                               sql="SELECT Person.*, Hat_Telefonnummer.Telefonnummer FROM Person JOIN Hat_Telefonnummer ON Person.Sozialversicherungsnummer = Hat_Telefonnummer.Sozialversicherungsnummer WHERE Person.Sozialversicherungsnummer  Like ?">
+                        <sql:param value="${person_id}"/>
+                    </sql:query>
+                </c:catch>
+            </c:if>
+
 
             <c:set var="angelegte_Person" scope="session" value="${angelegtePerson}"/>
 
@@ -192,17 +219,19 @@
                 </form>
             </td>
             <br>
-            <table class=" table table-striped table-responsive
+            <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer == person_id}">
+                <table class=" table table-striped table-responsive
             " border="1">
-                <tr>
-                    <th>Phone number(s)</th>
-                </tr>
-                <c:forEach var="Datensatz" begin="0" items="${angelegtePerson.rowsByIndex}">
                     <tr>
-                        <td>${Datensatz[7]}
+                        <th>Phone number(s)</th>
                     </tr>
-                </c:forEach>
-            </table>
+                    <c:forEach var="Datensatz" begin="0" items="${angelegtePerson.rowsByIndex}">
+                        <tr>
+                            <td>${Datensatz[7]}
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:if>
 
         </c:catch>
 
