@@ -71,11 +71,32 @@
 
         <c:set var="techniker_id" scope="session" value="${technikerExists.rows[0].Lizenznummer}"/>
 
-        <c:catch var="catchShowTechnikerException">
-            <sql:query var="angelegterTechniker"
-                       sql="SELECT p.*, a.*, t.*, r.*, h.Telefonnummer, b.Bankname FROM Person p JOIN Angestellter a ON p.Sozialversicherungsnummer = a.Sozialversicherungsnummer JOIN Techniker t ON a.Angestelltennummer = t.Angestelltennummer JOIN Raumschifftyp r ON t.WartetRaumschifftyp = r.Typennummer JOIN Hat_Telefonnummer h ON p.Sozialversicherungsnummer = h.Sozialversicherungsnummer JOIN Bank b ON a.Bankleitzahl = b.Bankleitzahl WHERE t.Lizenznummer Like ?">
-                <sql:param value="${techniker_id}"/>
+        <c:catch var="catchTelefonExistsException">
+            <sql:query var="telefonnummerExistsCheck"
+                       sql="SELECT Sozialversicherungsnummer FROM Hat_Telefonnummer WHERE Sozialversicherungsnummer LIKE ?">
+                <sql:param value="${person_id}"/>
             </sql:query>
+        </c:catch>
+
+        <c:if test="${catchTelefonExistsException != null}">
+            <!--<p>The type of exception is : ${catchTelefonExistsException} <br/>
+            There is an exception: ${catchTelefonExistsException.message}</p>-->
+        </c:if>
+
+        <c:catch var="catchShowTechnikerException">
+            <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer == person_id}">
+                <sql:query var="angelegterTechniker"
+                           sql="SELECT p.*, a.*, t.*, r.*, h.Telefonnummer, b.Bankname FROM Person p JOIN Angestellter a ON p.Sozialversicherungsnummer = a.Sozialversicherungsnummer JOIN Techniker t ON a.Angestelltennummer = t.Angestelltennummer JOIN Raumschifftyp r ON t.WartetRaumschifftyp = r.Typennummer JOIN Hat_Telefonnummer h ON p.Sozialversicherungsnummer = h.Sozialversicherungsnummer JOIN Bank b ON a.Bankleitzahl = b.Bankleitzahl WHERE t.Lizenznummer Like ?">
+                    <sql:param value="${techniker_id}"/>
+                </sql:query>
+            </c:if>
+
+            <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer != person_id}">
+                <sql:query var="angelegterTechniker"
+                           sql="SELECT p.*, a.*, t.*, r.*, b.Bankname FROM Person p JOIN Angestellter a ON p.Sozialversicherungsnummer = a.Sozialversicherungsnummer JOIN Techniker t ON a.Angestelltennummer = t.Angestelltennummer JOIN Raumschifftyp r ON t.WartetRaumschifftyp = r.Typennummer JOIN Bank b ON a.Bankleitzahl = b.Bankleitzahl WHERE t.Lizenznummer Like ?">
+                    <sql:param value="${techniker_id}"/>
+                </sql:query>
+            </c:if>
             <br><br>
             <div>
                 <h4>Personal data</h4>
@@ -83,16 +104,18 @@
                 <p>Sozialversicherungsnummer: <b>${angelegterTechniker.rows[0].Sozialversicherungsnummer}</b></p>
                 <p>
                     Address: ${angelegterTechniker.rows[0].Strasse} ${angelegterTechniker.rows[0].Hausnummer}, ${angelegterTechniker.rows[0].Postleitzahl} ${angelegterTechniker.rows[0].Ort}</p>
-                <table class="table table-striped table-dark" border="1">
-                    <tr>
-                        <th>Phone number(s)</th>
-                    </tr>
-                    <c:forEach var="Datensatz" begin="0" items="${angelegterTechniker.rowsByIndex}">
+                <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer == person_id}">
+                    <table class="table table-striped table-dark" border="1">
                         <tr>
-                            <td>${Datensatz[21]}</td>
+                            <th>Phone number(s)</th>
                         </tr>
-                    </c:forEach>
-                </table>
+                        <c:forEach var="Datensatz" begin="0" items="${angelegterTechniker.rowsByIndex}">
+                            <tr>
+                                <td>${Datensatz[21]}</td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </c:if>
                 <br>
                 <h4>Employee data</h4>
                 <p>Employee number: <b>${angelegterTechniker.rows[0].Angestelltennummer}</b></p>
@@ -115,8 +138,8 @@
             </div>
         </c:catch>
         <c:if test="${catchShowTechnikerException != null}">
-        <!--<p>The type of exception is : ${catchShowTechnikerException} <br/>
-                There is an exception: ${catchShowTechnikerException.message}</p>-->
+            <!--<p>The type of exception is : ${catchShowTechnikerException} <br/>
+            There is an exception: ${catchShowTechnikerException.message}</p>-->
         </c:if>
         <br>
         <br>
@@ -136,7 +159,8 @@
         <input type="hidden" name="menu" value="Techniker_Anlegen3"/>
 
         <label for="lizenznummer">License number:</label>
-        <input type="text" id="lizenznummer" name="lizenznummer" placeholder="T111111111" pattern="T\d{9}" title="Please enter a valid License number"><br>
+        <input type="text" id="lizenznummer" name="lizenznummer" placeholder="T111111111" pattern="T\d{9}"
+               title="Please enter a valid License number"><br>
 
         <label for="ausbildungsgrad">Training degree:</label>
         <select class="form-control" name="ausbildungsgrad" id="ausbildungsgrad" size="1">
@@ -242,12 +266,12 @@
 
     <c:if test="${catchTechnikerException != null}">
         <!--<p>The type of exception is : ${catchTechnikerException} <br/>
-            There is an exception: ${catchTechnikerException.message}</p>-->
+        There is an exception: ${catchTechnikerException.message}</p>-->
     </c:if>
 
     <c:if test="${catchShowTechnikerException != null}">
         <!--<p>The type of exception is : ${catchShowTechnikerException} <br/>
-            There is an exception: ${catchShowTechnikerException.message}</p>-->
+        There is an exception: ${catchShowTechnikerException.message}</p>-->
     </c:if>
 
     <br>
