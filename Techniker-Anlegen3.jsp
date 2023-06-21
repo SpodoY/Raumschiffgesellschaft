@@ -63,6 +63,19 @@
             There is an exception: ${checkTechnikerExists.message}</p>
     </c:if>
 
+
+    <c:catch var="catchTelefonExistsException">
+        <sql:query var="telefonnummerExistsCheck"
+                   sql="SELECT Sozialversicherungsnummer FROM Hat_Telefonnummer WHERE Sozialversicherungsnummer LIKE ?">
+            <sql:param value="${person_id}"/>
+        </sql:query>
+    </c:catch>
+
+    <c:if test="${catchTelefonExistsException != null}">
+        <!--<p>The type of exception is : ${catchTelefonExistsException} <br/>
+        There is an exception: ${catchTelefonExistsException.message}</p>-->
+    </c:if>
+
     <c:if test="${technikerExists.rows[0].Angestelltennummer == angestellten_id}">
         <h3> Employee <b>${angelegte_Person.rows[0].Vorname} ${angelegte_Person.rows[0].Nachname} <br> with employee
             number ${angestellten_id}<br> and Sozialverischerungsnummer ${person_id}<br></b> <br><br>is already a
@@ -70,18 +83,6 @@
         </h3>
 
         <c:set var="techniker_id" scope="session" value="${technikerExists.rows[0].Lizenznummer}"/>
-
-        <c:catch var="catchTelefonExistsException">
-            <sql:query var="telefonnummerExistsCheck"
-                       sql="SELECT Sozialversicherungsnummer FROM Hat_Telefonnummer WHERE Sozialversicherungsnummer LIKE ?">
-                <sql:param value="${person_id}"/>
-            </sql:query>
-        </c:catch>
-
-        <c:if test="${catchTelefonExistsException != null}">
-            <!--<p>The type of exception is : ${catchTelefonExistsException} <br/>
-            There is an exception: ${catchTelefonExistsException.message}</p>-->
-        </c:if>
 
         <c:catch var="catchShowTechnikerException">
             <c:if test="${telefonnummerExistsCheck.rows[0].Sozialversicherungsnummer == person_id}">
