@@ -66,8 +66,8 @@
 
 
     <c:if test="${changeAdresseException != null}">
-        <p>The type of exception is : ${changeAdresseException} <br/>
-            There is an exception: ${changeAdresseException.message}</p>
+        <!--<p>The type of exception is : ${changeAdresseException} <br/>
+            There is an exception: ${changeAdresseException.message}</p>-->
     </c:if>
 
 
@@ -82,8 +82,8 @@
     </c:catch>
 
     <c:if test="${catchShowPerson2Exception != null}">
-        <p>The type of exception is : ${catchShowPerson2Exception} <br/>
-            There is an exception: ${catchShowPerson2Exception.message}</p>
+        <!--<p>The type of exception is : ${catchShowPerson2Exception} <br/>
+            There is an exception: ${catchShowPerson2Exception.message}</p>-->
     </c:if>
 
 
@@ -120,8 +120,8 @@
     </c:catch>
 
     <c:if test="${checkAngExists != null}">
-        <p>The type of exception is : ${checkAngExists} <br/>
-            There is an exception: ${checkAngExists.message}</p>
+        <!--<p>The type of exception is : ${checkAngExists} <br/>
+            There is an exception: ${checkAngExists.message}</p>-->
     </c:if>
 
 
@@ -156,8 +156,8 @@
             </table>
         </c:catch>
         <c:if test="${catchShowAngestellterException != null}">
-            <p>The type of exception is : ${catchShowAngestellterException} <br/>
-                There is an exception: ${catchShowAngestellterException.message}</p>
+            <!--<p>The type of exception is : ${catchShowAngestellterException} <br/>
+                There is an exception: ${catchShowAngestellterException.message}</p>-->
         </c:if>
 
         <br>
@@ -175,19 +175,19 @@
         <input type="hidden" name="menu" value="Techniker_Anlegen2"/>
 
         <label for="angestelltennummer">Employee Number:</label>
-        <input type="text" id="angestelltennummer" name="angestelltennummer" placeholder="A123456789" pattern="A\d{9}" title="Please enter a valid employee number"><br>
+        <input type="text" id="angestelltennummer" name="angestelltennummer" placeholder="A123456789" pattern="A\d{9}" title="Please enter a valid employee number" required><br>
 
         <label for="kontonummer">Account number:</label>
-        <input type="text" id="kontonummer" name="kontonummer" placeholder="123456789" pattern="\d{10,15}" title="Please enter a valid account number"><br>
+        <input type="text" id="kontonummer" name="kontonummer" placeholder="123456789" pattern="\d{10,15}" title="Please enter a valid account number" required><br>
 
         <label for="bankleitzahl">Bank code:</label>
-        <input type="text" id="bankleitzahl" name="bankleitzahl" placeholder="12345678901" pattern="\d{5,15}" title="Please enter a valid account number"><br>
+        <input type="text" id="bankleitzahl" name="bankleitzahl" placeholder="12345678901" pattern="\d{5,15}" title="Please enter a valid account number" required><br>
 
         <label for="bankname">Bank name:</label>
-        <input type="text" id="bankname" name="bankname" placeholder="Sparkasse" pattern="[A-Za-z]{1,100}" title="Please enter a valid bank name"><br>
+        <input type="text" id="bankname" name="bankname" placeholder="Sparkasse" pattern="[A-Za-z]{1,100}" title="Please enter a valid bank name" required><br>
 
         <label for="kontostand">Account balance:</label>
-        <input type="text" id="kontostand" name="kontostand" placeholder="0.00" pattern="\d+(\.\d{1,2})?" title="Please enter a valid account balance"><br>
+        <input type="text" id="kontostand" name="kontostand" placeholder="0.00" pattern="\d+(\.\d{1,2})?" title="Please enter a valid account balance"required><br>
 
         <br><br>
         <input type="submit" value="Submit" class="btn btn-primary">
@@ -251,18 +251,18 @@
             </c:catch>
 
             <c:if test="${catchBankException != null}">
-                <p>The type of exception is : ${catchBankException} <br/>
-                    There is an exception: ${catchBankException.message}</p>
+    <!--<p>The type of exception is : ${catchBankException} <br/>
+                    There is an exception: ${catchBankException.message}</p>-->
             </c:if>
 
             <c:if test="${catchAngestellterException != null}">
-                <p>The type of exception is : ${catchAngestellterException} <br/>
-                    There is an exception: ${catchAngestellterException.message}</p>
+    <!--<p>The type of exception is : ${catchAngestellterException} <br/>
+                    There is an exception: ${catchAngestellterException.message}</p>-->
             </c:if>
 
             <c:if test="${catchShowAngestellterException != null}">
-                <p>The type of exception is : ${catchShowAngestellterException} <br/>
-                    There is an exception: ${catchShowAngestellterException.message}</p>
+    <!--<p>The type of exception is : ${catchShowAngestellterException} <br/>
+                    There is an exception: ${catchShowAngestellterException.message}</p>-->
             </c:if>
 
             <br>
@@ -274,24 +274,6 @@
 
         </c:if>
 
-
-        <c:if test="${empty param.angestelltennummer || empty param.kontonummer || empty param.bankleitzahl || empty param.kontostand || empty param.bankname}">
-            <c:if test="${empty param.angestelltennummer }">
-                <p>Employee number was missing </p>
-            </c:if>
-            <c:if test="${empty param.kontonummer }">
-                <p>Account number was missing</p>
-            </c:if>
-            <c:if test="${empty param.bankleitzahl }">
-                <p>Bank code was missing </p>
-            </c:if>
-            <c:if test="${empty param.bankname }">
-                <p>Bank name was missing </p>
-            </c:if>
-            <c:if test="${empty param.kontostand }">
-                <p>Account balance was missing. If no account balance is known, please enter 0. </p>
-            </c:if>
-        </c:if>
     </c:if>
 
 </div>

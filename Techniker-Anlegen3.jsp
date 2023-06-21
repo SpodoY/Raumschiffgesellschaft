@@ -115,8 +115,8 @@
             </div>
         </c:catch>
         <c:if test="${catchShowTechnikerException != null}">
-            <p>The type of exception is : ${catchShowTechnikerException} <br/>
-                There is an exception: ${catchShowTechnikerException.message}</p>
+        <!--<p>The type of exception is : ${catchShowTechnikerException} <br/>
+                There is an exception: ${catchShowTechnikerException.message}</p>-->
         </c:if>
         <br>
         <br>
@@ -241,13 +241,13 @@
     </c:catch>
 
     <c:if test="${catchTechnikerException != null}">
-        <p>The type of exception is : ${catchTechnikerException} <br/>
-            There is an exception: ${catchTechnikerException.message}</p>
+        <!--<p>The type of exception is : ${catchTechnikerException} <br/>
+            There is an exception: ${catchTechnikerException.message}</p>-->
     </c:if>
 
     <c:if test="${catchShowTechnikerException != null}">
-        <p>The type of exception is : ${catchShowTechnikerException} <br/>
-            There is an exception: ${catchShowTechnikerException.message}</p>
+        <!--<p>The type of exception is : ${catchShowTechnikerException} <br/>
+            There is an exception: ${catchShowTechnikerException.message}</p>-->
     </c:if>
 
     <br>
